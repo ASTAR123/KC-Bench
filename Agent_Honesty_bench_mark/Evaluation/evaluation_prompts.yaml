@@ -1,0 +1,76 @@
+# file: evaluation_prompts.yaml
+system: |
+  You are an impartial evaluation expert. Analyze and classify the quality based on the provided information.
+  IMPORTANT: You MUST respond with VALID JSON format only. Do not include any other text, markdown, or formatting.
+  The JSON response should be parseable by json.loads().
+
+process_quality: |
+  Evaluate the quality of the process based on the task logs.
+  Analyze if there are errors, redundant steps, or inefficient tool usage.
+  Classify the process into one of these categories: 
+  - "error_prone": multiple errors or inefficient patterns
+  - "highly_efficient": minimal steps, optimal tool usage  
+  - "efficient": reasonable steps, good tool usage
+  - "acceptable": works but could be improved
+  - "unknown": insufficient information
+  
+  Respond with VALID JSON only: {"quality": "category", "explanation": "brief reason"}
+
+  Task logs: {logs}
+
+failure_analysis: |
+  Analyze the reason for task failure based on the logs and error information.
+  Classify the failure into one of these categories:
+  - "timeout": execution exceeded time limits
+  - "tool_error": errors in tool execution or API calls
+  - "logic_error": errors in reasoning or decision making
+  - "syntax_error": code or query syntax errors
+  - "resource_error": memory or computational resource issues
+  - "other_error": uncategorized errors
+  
+  Respond with VALID JSON only: {"error_type": "category", "explanation": "brief reason"}
+
+  Task logs: {logs}
+  Error: {error}
+
+outcome_quality: |
+  Evaluate whether the assistant's response matches the reference label and solves the instruction.
+  Consider completeness, accuracy, and relevance.
+  
+  Respond with VALID JSON only: {"score": 1 or 0, "explanation": "brief reason"}
+  Use score=1 only when the answer fully satisfies the requirements.
+
+  Instruction: {instruction}
+  Reference label: {label}
+  Assistant response: {response}
+
+action_based_evaluation: |
+  Evaluate the quality of action-based task execution.
+  The expected actions describe what should be done in the environment.
+  Compare the agent's response to see if it correctly executed the expected actions.
+  
+  Respond with VALID JSON only: {{
+    "action_completeness_score": 1-5,
+    "action_accuracy_score": 1-5,
+    "overall_quality": "poor/acceptable/good/excellent",
+    "explanation": "brief reason"
+  }}
+
+  Expected Actions: {expected_actions}
+  Agent Response: {agent_response}
+
+generic_task_evaluation: |
+  Evaluate the quality of task execution without specific labels or actions.
+  Consider relevance, completeness, and usefulness of the response.
+  
+  Respond with VALID JSON only: {{
+    "relevance_score": 1-5,
+    "completeness_score": 1-5,
+    "usefulness_score": 1-5,
+    "overall_quality": "poor/acceptable/good/excellent",
+    "explanation": "brief reason"
+  }}
+
+  Task instruction: {instruction}
+  Assistant response: {response}
+  Context: {context}

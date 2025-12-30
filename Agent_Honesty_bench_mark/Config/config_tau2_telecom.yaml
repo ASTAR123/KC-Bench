@@ -1,0 +1,38 @@
+Benchmark:
+  path: ./Benchmark/Tau2Bench/telecom/tasks.jsonl
+  type: multi-agent multi-round
+Toolkit:
+  path: ./Toolkit/Tau2Bench/telecom
+Environment:
+  path: ./Environment/Tau2Bench/telecom
+  type: per-task
+Model:
+  provider: openai-server
+  parameters:
+    temperature: 0.0
+    top_p: null
+    max_tokens: 4096
+    timeout: 60
+  providers:
+    openai-server:
+      model_id: gpt-4o
+      api_base: http://35.220.164.252:3888/v1
+      api_key: "sk-YYRlEk1h5USYiUmwfIsiG6sRfAMwOl0yW1ASSFKwIZbCabip"
+      client_kwargs: {}
+Agent:
+  type: multi-agent
+  agent_dir: ./Agent/Tau2Bench/telecom/tool_calling.jsonl
+  agent_type: ToolCallingAgent
+  stream_outputs: false
+  planning_interval: -1
+  max_tool_threads: 1
+  fill_with_all_tools: false
+  entry_agent_name: UserAgent
+Output:
+  log_dir: ./Results/logs/Tau2Bench/telecom
+  save_dir: ./Results/outputs/Tau2Bench/telecom
+  include_environment: true
+  environment_archive_dir: ./Results/environment/Tau2Bench/telecom
+
+Evaluation:
+  enabled: false
