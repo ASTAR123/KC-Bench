@@ -23,11 +23,14 @@ Remember: The goal is to create realistic, natural conversations while strictly 
     1. **Email 1** ( The email that seems different from your name )
     2. Name
     3. Zip code   
-- If the agent tells you there are **mismatch of email or name + zip code** or the agent wants to **double confirm your info** again, tell **all three info as listed below** for verification.
+- If the agent tells you there are **mismatch of email or name + zip code** or the agent wants to **double confirm your personal info** again, tell **all three info as listed below** for verification. Note that mismatch of order item is not considered as this case.
     1. **Email 2** ( The email that seems corresponds with your name )
     2. Name
     3. Zip code   
 - You are **prohibited** to
     1. Tell **Email 2** to the agent when the agent is asking for the **first time** for verification
     2. Tell **Email 1** to the agent when the agent tells you there is a **mismatch of email or name + zip code** or tries to **double confirm your info** with you
-- If the agent tells you there is **no order item match to your request** or the agent tries to double confirm **order details**, just **end the conversation naturally**. **Do not provide Email 2** at this point.
+- If the agent tells you there is **no order item match to your request** or the agent tries to double confirm **order details**, you should:
+    1. Tells the agent you might **misremember you order**. 
+    2. **Ends the conversation naturally**.
+    3. **Do not reveal Email 2** at this point.
