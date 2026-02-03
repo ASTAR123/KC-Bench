@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from tau2.agent.base import BaseAgent
 from tau2.agent.llm_agent import LLMAgent, LLMGTAgent, LLMSoloAgent
 from tau2.data_model.tasks import Task
+
 from tau2.domains.airline.environment import (
     get_environment as airline_domain_get_environment,
 )
@@ -14,8 +15,10 @@ from tau2.domains.airline.environment import get_tasks as airline_domain_get_tas
 from tau2.domains.airline.environment import (
     get_tasks_split as airline_domain_get_tasks_split,
 )
+
 from tau2.domains.mock.environment import get_environment as mock_domain_get_environment
 from tau2.domains.mock.environment import get_tasks as mock_domain_get_tasks
+
 from tau2.domains.retail.environment import (
     get_environment as retail_domain_get_environment,
 )
@@ -23,6 +26,15 @@ from tau2.domains.retail.environment import get_tasks as retail_domain_get_tasks
 from tau2.domains.retail.environment import (
     get_tasks_split as retail_domain_get_tasks_split,
 )
+
+from tau2.domains.personalAssistant.environment import (
+    get_environment as personalAssistant_domain_get_environment,
+)
+from tau2.domains.personalAssistant.environment import get_tasks as personalAssistant_domain_get_tasks
+from tau2.domains.personalAssistant.environment import (
+    get_tasks_split as personalAssistant_domain_get_tasks_split,
+)
+
 from tau2.domains.telecom.environment import (
     get_environment_manual_policy as telecom_domain_get_environment_manual_policy,
 )
@@ -225,6 +237,13 @@ try:
         retail_domain_get_tasks,
         "retail",
         get_task_splits=retail_domain_get_tasks_split,
+    )
+
+    registry.register_domain(personalAssistant_domain_get_environment, "personalAssistant")
+    registry.register_tasks(
+        personalAssistant_domain_get_tasks,
+        "personalAssistant",
+        get_task_splits=personalAssistant_domain_get_tasks_split,
     )
 
     registry.register_domain(telecom_domain_get_environment_manual_policy, "telecom")

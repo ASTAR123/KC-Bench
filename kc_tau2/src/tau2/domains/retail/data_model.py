@@ -233,7 +233,6 @@ class RetailDB(DB):
             "total_num_items": total_num_items,
         }
 
-
 def get_db():
     return RetailDB.load(RETAIL_DB_PATH)
 
