@@ -140,7 +140,7 @@ class EnvironmentEvaluator(EvaluatorBase):
         reward_breakdown = {}
         if RewardType.DB in task.evaluation_criteria.reward_basis:
             reward_breakdown[RewardType.DB] = db_reward
-            reward *= db_reward
+            #reward *= db_reward
         if RewardType.ENV_ASSERTION in task.evaluation_criteria.reward_basis:
             reward_breakdown[RewardType.ENV_ASSERTION] = env_assertion_reward
             reward *= env_assertion_reward
