@@ -82,8 +82,16 @@ def evaluate_simulation(
             task=task,
             full_trajectory=simulation.messages,
         )
+
+        # Determine if we should evaluate NL assertions
+        task_reward_basis = set(task.evaluation_criteria.reward_basis)
+        should_evaluate_nl = (
+            evaluation_type == EvaluationType.ALL_WITH_NL_ASSERTIONS
+            or RewardType.NL_ASSERTION in task_reward_basis
+        )
+
         nl_reward_info = None
-        if evaluation_type == EvaluationType.ALL_WITH_NL_ASSERTIONS:
+        if should_evaluate_nl:
             nl_reward_info = NLAssertionsEvaluator.calculate_reward(
                 task=task,
                 full_trajectory=simulation.messages,
@@ -95,7 +103,6 @@ def evaluate_simulation(
         action_bases = {RewardType.ACTION}
         nl_bases = {RewardType.NL_ASSERTION}
         comm_bases = {RewardType.COMMUNICATE}
-        task_reward_basis = set(task.evaluation_criteria.reward_basis)
 
         reward_breakdown = {}
         if task_reward_basis & env_bases:
@@ -107,10 +114,13 @@ def evaluate_simulation(
                 reward_breakdown.update(action_reward_info.reward_breakdown)
             reward *= action_reward_info.reward
         if task_reward_basis & nl_bases:
-            if evaluation_type != EvaluationType.ALL_WITH_NL_ASSERTIONS:
-                raise ValueError(
-                    "NL assertions are part of the reward basis, but they are not being evaluated."
+            # Ensure we have the info if it was required for reward
+            if nl_reward_info is None:
+                nl_reward_info = NLAssertionsEvaluator.calculate_reward(
+                    task=task,
+                    full_trajectory=simulation.messages,
                 )
+
             if nl_reward_info.reward_breakdown is not None:
                 reward_breakdown.update(nl_reward_info.reward_breakdown)
             reward *= nl_reward_info.reward

@@ -87,42 +87,35 @@ class PersonalAssistantTools(ToolKitBase):
         
         contacts_info = []
         for contact in results:
-
-            phones_info = []
-            for phone in contact.phone_numbers:
-                phones_info.append({
-                    "number": phone.number,
-                    "is_default": phone.is_default,
-                    "remark": phone.remark if phone.remark else ""
-                })  
-            emails_info = []
-            for email in contact.email:
-                emails_info.append({
-                    "address": email.address,
-                    "is_default": email.is_default,
-                    "remark": email.remark if email.remark else ""
-                })
+            phones = [p.number for p in contact.phone_numbers]
+            emails = [e.address for e in contact.email]
             contacts_info.append({
                 "name": contact.name,
-                "phones": phones_info,
-                "emails": emails_info,
-                "remark": contact.remark
+                "phones": phones,
+                "emails": emails,
+                "description": contact.description
             })
         
         return json.dumps(contacts_info, indent=2)
 
     @is_tool(ToolType.READ)
     def list_all_contacts(self) -> str:
-        """List all names and remarks of contacts in the contact list.
+        """List all contacts in the contact list.
         
         Returns:
-            str: A JSON string of contact names and remarks.
+            str: A JSON string of contact names and basic info.
         """
         contacts_summary = {}
         for name, contact in self.db.contacts.items():
+            default_phone = next((p.number for p in contact.phone_numbers if p.is_default), 
+                               contact.phone_numbers[0].number if contact.phone_numbers else "No phone")
+            default_email = next((e.address for e in contact.email if e.is_default), 
+                               contact.email[0].address if contact.email else "No email")
             
             contacts_summary[name] = {
-                "remark": contact.remark
+                "default_phone": default_phone,
+                "default_email": default_email,
+                "description": contact.description
             }
         return json.dumps(contacts_summary, indent=2)
 
@@ -145,8 +138,8 @@ class PersonalAssistantTools(ToolKitBase):
         phone_desc = ""
         for phone in contact.phone_numbers:
             if phone.number == identifier:
-                if phone.remark:
-                    phone_desc = f" ({phone.remark})"
+                if phone.description:
+                    phone_desc = f" ({phone.description})"
                 break
         
         return f"Calling {contact.name} at {identifier}{phone_desc}..."
@@ -170,8 +163,8 @@ class PersonalAssistantTools(ToolKitBase):
         phone_desc = ""
         for phone in contact.phone_numbers:
             if phone.number == identifier:
-                if phone.remark:
-                    phone_desc = f" ({phone.remark})"
+                if phone.description:
+                    phone_desc = f" ({phone.description})"
                 break
         
         return f"Sending a message to {contact.name} at {identifier}{phone_desc}..."
@@ -194,8 +187,8 @@ class PersonalAssistantTools(ToolKitBase):
         
         email_desc = ""
         for email in contact.email:
-                if email.remark:
-                    email_desc = f" ({email.remark})"
+                if email.description:
+                    email_desc = f" ({email.description})"
                 break
         
         return f"Email sent to {contact.name} at {identifier}{email_desc}. Subject: {subject}"

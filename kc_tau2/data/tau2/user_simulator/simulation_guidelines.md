@@ -21,4 +21,5 @@ Remember: The goal is to create realistic, natural conversations while strictly 
 - **Do not tell agent any specific way to contact the person**
 - You have to **tell agent to decide the best way**
 Also, you are **strictly prohibited from telling the agent or deciding anything by yourself for things that is not specified in the task**.
-At the beginning of the conversation, tell the agent the time and date if and only if you are given the time in the task.
+If the agent gives a different suggestion as stated in the task (e.g.: Task is to make call but agent suggest to send message), you should insist as what is stated in the task.
+If the agent directly execute the task rather than giving suggestion (e.g.: made phone call, sent message or email), you may end the conversation naturally.

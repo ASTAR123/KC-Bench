@@ -13,9 +13,9 @@ class PhoneNumber(BaseModel):
         default=False,
         description="Whether this is the default phone number for the contact"
     )
-    description: Optional[str] = Field(
+    remark: Optional[str] = Field(
         default=None,
-        description="Optional description for this phone number (e.g., 'mobile', 'work')"
+        description="Optional remark for this phone number (e.g., 'mobile', 'work')"
     )
 
 
@@ -27,16 +27,16 @@ class EmailAddress(BaseModel):
         default=False,
         description="Whether this is the default email address for the contact"
     )
-    description: Optional[str] = Field(
+    remark: Optional[str] = Field(
         default=None,
-        description="Optional description for this email address (e.g., 'personal', 'work')"
+        description="Optional remark for this email address (e.g., 'personal', 'work')"
     )
 
 
-class ContactDescription(BaseModel):
-    """Represents an additional description for a contact."""
+class ContactRemark(BaseModel):
+    """Represents an additional remark for a contact. (e.g., 'Prefer phone call', 'Classmate')"""
     
-    text: str = Field(description="Description text")
+    text: str = Field(description="Remark text")
 
 
 class ContactHistory(BaseModel):
@@ -54,7 +54,7 @@ class Contact(BaseModel):
     name: str = Field(description="Contact's full name (required)")
     phone_numbers: List[PhoneNumber] = Field(description="List of phone numbers (at least one required)")
     email: List[EmailAddress] = Field(default_factory=list,description="List of email addresses (optional)")
-    description: str = Field(description="Additional description for the contact (optional)")
+    remark: str = Field(description="Additional description for the contact (optional)")
 
     class Config:
         validate_assignment = True
