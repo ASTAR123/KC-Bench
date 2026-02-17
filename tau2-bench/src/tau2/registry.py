@@ -15,7 +15,7 @@ from tau2.domains.airline.environment import (
     get_tasks_split as airline_domain_get_tasks_split,
 )
 from tau2.domains.mock.environment import get_environment as mock_domain_get_environment
-from tau2.domains.mock.environment import get_tasks as mock_domain_get_tasks    
+from tau2.domains.mock.environment import get_tasks as mock_domain_get_tasks
 from tau2.domains.retail.environment import (
     get_environment as retail_domain_get_environment,
 )
@@ -39,14 +39,16 @@ from tau2.domains.telecom.environment import (
 from tau2.domains.telecom.environment import (
     get_tasks_split as telecom_domain_get_tasks_split,
 )
-from tau2.domains.knowledge_conflict.environment import get_environment as knowledge_conflict_domain_get_environment
-from tau2.domains.knowledge_conflict.environment import get_tasks as knowledge_conflict_domain_get_tasks
-from tau2.domains.knowledge_conflict.environment import get_tasks_split as knowledge_conflict_domain_get_tasks_split   
-
 from tau2.environment.environment import Environment
 from tau2.user.base import BaseUser
 from tau2.user.user_simulator import DummyUser, UserSimulator
 
+
+from tau2.domains.sale.environment import (
+    get_environment as sale_domain_get_environment,
+    get_tasks as sale_domain_get_tasks,
+    get_tasks_split as sale_domain_get_tasks_split, # 新增这一行
+)
 
 class RegistryInfo(BaseModel):
     """Options for the registry"""
@@ -224,6 +226,13 @@ try:
         get_task_splits=airline_domain_get_tasks_split,
     )
 
+    registry.register_domain(sale_domain_get_environment, "sale")
+    registry.register_tasks(
+        sale_domain_get_tasks,
+        "sale",
+        get_task_splits=sale_domain_get_tasks_split,
+    )
+    
     registry.register_domain(retail_domain_get_environment, "retail")
     registry.register_tasks(
         retail_domain_get_tasks,
@@ -246,13 +255,6 @@ try:
         telecom_domain_get_tasks,
         "telecom-workflow",
         get_task_splits=telecom_domain_get_tasks_split,
-    )
-
-    registry.register_domain(knowledge_conflict_domain_get_environment, "knowledge_conflict")
-    registry.register_tasks(
-        knowledge_conflict_domain_get_tasks,
-        "knowledge_conflict",
-        get_task_splits=knowledge_conflict_domain_get_tasks_split,
     )
 
     logger.debug(

@@ -1,15 +1,3 @@
-<instructions>
-You are a customer service agent that helps the user according to the <policy>
-provided below.
-In each turn you can either:
-- Send a message to the user.
-- Make a tool call.
-You cannot do both at the same time.
-
-Try to be helpful and always follow the policy. Always make sure you generate
-valid JSON only.
-</instructions>
-<policy>
 # Phone Device - Technical Support Troubleshooting Workflow
 
 ## Introduction
@@ -309,4 +297,3 @@ Check the technical settings (APNs) the phone uses to connect to the carrier's m
 
 **If issues persist after checking all above:**
 - Escalate to technical support 
-</policy>

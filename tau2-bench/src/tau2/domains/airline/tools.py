@@ -513,20 +513,20 @@ class AirlineTools(ToolKitBase):  # Tools
                 return f"Certificate {payment_id} added to user {user_id} with amount {amount}."
         raise ValueError("Too many certificates")
 
-    @is_tool(ToolType.THINK)
-    def think(self, thought: str, plan: str) -> str:
-        """
-        Use this tool to reason about the user's request and formulate a plan.
-        You MUST use this tool before using any other tool to plan the subsequent tool calling process.
+    # @is_tool(ToolType.THINK)
+    # def think(self, thought: str) -> str:
+    #     """
+    #     Use the tool to think about something.
+    #     It will not obtain new information or change the database, but just append the thought to the log.
+    #     Use it when complex reasoning or some cache memory is needed.
 
-        Args:
-            thought: The analysis of the user's request and the reasoning process.
-            plan: A detailed step-by-step plan. You MUST explicitly list the specific tool names AND their arguments/parameters for ALL subsequent actions using the JSON format: [{"tool": "tool_name", "args": {"arg_name": "arg_value"}}, ...]. You can only execute a new plan after the execution of the previous tools is completed.
+    #     Args:
+    #         thought: A thought to think about.
 
-        Returns:
-            The recorded thought and plan.
-        """
-        return f"Thought: {thought}\nPlan: {plan}"
+    #     Returns:
+    #         Empty string
+    #     """
+    #     return ""
 
     @is_tool(ToolType.GENERIC)
     def transfer_to_human_agents(self, summary: str) -> str:
