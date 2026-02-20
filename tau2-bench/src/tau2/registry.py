@@ -43,6 +43,22 @@ from tau2.domains.knowledge_conflict.environment import get_environment as knowl
 from tau2.domains.knowledge_conflict.environment import get_tasks as knowledge_conflict_domain_get_tasks
 from tau2.domains.knowledge_conflict.environment import get_tasks_split as knowledge_conflict_domain_get_tasks_split   
 
+from tau2.domains.sycophancy.environment import (
+    get_environment as sycophancy_get_env,
+    get_tasks as sycophancy_get_tasks,
+    get_tasks_split as sycophancy_get_tasks_split
+)
+from tau2.domains.faithfulness.environment import (
+    get_environment as faithfulness_get_env,
+    get_tasks as faithfulness_get_tasks,
+    get_tasks_split as faithfulness_get_tasks_split
+)
+from tau2.domains.deception.environment import (
+    get_environment as deception_get_env,
+    get_tasks as deception_get_tasks,
+    get_tasks_split as deception_get_tasks_split
+)
+
 from tau2.environment.environment import Environment
 from tau2.user.base import BaseUser
 from tau2.user.user_simulator import DummyUser, UserSimulator
@@ -254,6 +270,18 @@ try:
         "knowledge_conflict",
         get_task_splits=knowledge_conflict_domain_get_tasks_split,
     )
+
+    # --- Sycophancy ---
+    registry.register_domain(sycophancy_get_env, "sycophancy")
+    registry.register_tasks(sycophancy_get_tasks, "sycophancy", get_task_splits=sycophancy_get_tasks_split)
+
+    # --- Faithfulness ---
+    registry.register_domain(faithfulness_get_env, "faithfulness")
+    registry.register_tasks(faithfulness_get_tasks, "faithfulness", get_task_splits=faithfulness_get_tasks_split)
+
+    # --- Deception ---
+    registry.register_domain(deception_get_env, "deception")
+    registry.register_tasks(deception_get_tasks, "deception", get_task_splits=deception_get_tasks_split)
 
     logger.debug(
         f"Default components registered successfully. Registry info: {json.dumps(registry.get_info().model_dump(), indent=2)}"
