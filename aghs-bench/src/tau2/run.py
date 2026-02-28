@@ -558,6 +558,7 @@ def run_task(
         simulation=simulation,
         evaluation_type=evaluation_type,
         solo_mode=solo_mode,
+        faithfulness_save_dir=f"results/faithfulness_eval_{llm_agent.replace('/', '_') if llm_agent else 'unknown'}_{simulation.timestamp}"
     )
 
     simulation.reward_info = reward_info

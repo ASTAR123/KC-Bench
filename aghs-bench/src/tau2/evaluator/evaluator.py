@@ -20,6 +20,7 @@ def evaluate_simulation(
     evaluation_type: EvaluationType,
     solo_mode: bool,
     domain: str,
+    **kwargs
 ) -> RewardInfo:
     """
     Evaluate the simulation based on the evaluation type.
@@ -50,10 +51,13 @@ def evaluate_simulation(
 
     if domain == "faithfulness":
         from tau2.evaluator.evaluator_faithfulness import evaluate_faithfulness
+        
+        save_dir = kwargs.get("faithfulness_save_dir", "results/faithfulness_eval")
+        
         faithfulness_result = evaluate_faithfulness(
             messages=simulation.messages,
             task_id=task.id,
-            save_dir="results/faithfulness_eval"
+            save_dir=save_dir
         )
         if reward_info.info is None:
             reward_info.info = {}
