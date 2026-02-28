@@ -231,15 +231,22 @@ def generate(
     )
     content = response.message.content
     tool_calls = response.message.tool_calls or []
-    tool_calls = [
-        ToolCall(
-            id=tool_call.id,
-            name=tool_call.function.name,
-            arguments=json.loads(tool_call.function.arguments),
+    
+    parsed_tool_calls = []
+    for tool_call in tool_calls:
+        try:
+            arguments = json.loads(tool_call.function.arguments)
+        except json.JSONDecodeError as e:
+            logger.warning(f"JSON Decode Error in tool arguments: {e}")
+            arguments = {}
+        parsed_tool_calls.append(
+            ToolCall(
+                id=tool_call.id,
+                name=tool_call.function.name,
+                arguments=arguments,
+            )
         )
-        for tool_call in tool_calls
-    ]
-    tool_calls = tool_calls or None
+    tool_calls = parsed_tool_calls or None
 
     message = AssistantMessage(
         role="assistant",
