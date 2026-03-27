@@ -42,8 +42,11 @@ def get_environment_info(
     """Get information about the environment for a registered Domain"""
     global registry
     env_constructor = registry.get_env_constructor(domain_name)
-    return env_constructor().get_info(include_tool_info=include_tool_info)
-
+    try:
+        return env_constructor().get_info(include_tool_info=include_tool_info)
+    except FileNotFoundError:
+        logger.warning(f"Default policy not found for {domain_name}, skipping info check.")
+        return EnvironmentInfo(domain_name=domain_name, policy="", tools=[])
 
 def load_task_splits(task_set_name: str) -> Optional[dict[str, list[str]]]:
     """

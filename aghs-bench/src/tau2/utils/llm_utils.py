@@ -1,3 +1,4 @@
+import ast
 import json
 import re
 from typing import Any, Optional
@@ -211,6 +212,7 @@ def generate(
             messages=litellm_messages,
             tools=tools,
             tool_choice=tool_choice,
+            timeout=3600,
             **kwargs,
         )
     except Exception as e:
@@ -229,24 +231,142 @@ def generate(
     assert response.message.role == "assistant", (
         "The response should be an assistant message"
     )
-    content = response.message.content
-    tool_calls = response.message.tool_calls or []
-    
+    import uuid
+    content = response.message.content or ""
+    raw_tool_calls = getattr(response.message, "tool_calls", None) or []
     parsed_tool_calls = []
-    for tool_call in tool_calls:
+
+    # 1. 彻底移除思考逻辑 (Thinking)
+    content = re.sub(r"<think>.*?</think>", "", content, flags=re.DOTALL)
+    if "</think>" in content:
+        content = re.sub(r".*?</think>", "", content, flags=re.DOTALL)
+    content = re.sub(r"<think>.*$", "", content, flags=re.DOTALL).strip()
+
+    # 定义内部小工具函数
+    def _parse_val(v):
+        if isinstance(v, (dict, list)): return v
+        if not v: return {}
+        try: return json.loads(v)
+        except: 
+            try: return ast.literal_eval(v)
+            except: return v
+
+    # 2. 首先处理模型通过官方 API 成功解析的标准 tool_calls
+    for tc in raw_tool_calls:
         try:
-            arguments = json.loads(tool_call.function.arguments)
-        except json.JSONDecodeError as e:
-            logger.warning(f"JSON Decode Error in tool arguments: {e}")
-            arguments = {}
-        parsed_tool_calls.append(
-            ToolCall(
-                id=tool_call.id,
-                name=tool_call.function.name,
-                arguments=arguments,
-            )
+            # 兼容不同版本的 litellm/OpenAI 返回结构
+            func = getattr(tc, "function", tc)
+            func_name = getattr(func, "name", None)
+            func_args = getattr(func, "arguments", "{}")
+            tc_id = getattr(tc, "id", f"call_{uuid.uuid4().hex[:8]}")
+            
+            if func_name:
+                args = _parse_val(func_args)
+                parsed_tool_calls.append(ToolCall(
+                    id=tc_id, 
+                    name=func_name, 
+                    arguments=args if isinstance(args, dict) else {}
+                ))
+        except Exception as e:
+            logger.warning(f"Failed to parse standard tool arguments: {e}")
+
+    # 3. 增强解析：从 content 文本中提取“隐藏”的工具调用（支持 OpenAI 与 Hermes 格式）
+    
+    # 3.1 提取带有标签的块 (Hermes / Python tag)
+    combined_pattern = r"(?:<tool_call>|<\|python_tag\|>)(.*?)(?:</tool_call>|(?=<tool_call>)|(?=<\|python_tag\|>)|$)"
+    found_blocks = re.findall(combined_pattern, content, re.DOTALL)
+    
+    for block in found_blocks:
+        try:
+            json_match = re.search(r"\{.*\}", block, re.DOTALL)
+            if json_match:
+                obj = json.loads(json_match.group())
+                name = obj.get("name") or obj.get("tool") or "unknown_tool"
+                args = obj.get("arguments") or obj.get("parameters") or obj
+                parsed_tool_calls.append(ToolCall(
+                    id=f"call_{uuid.uuid4().hex[:8]}", 
+                    name=name, 
+                    arguments=_parse_val(args)
+                ))
+        except Exception as e:
+            logger.debug(f"Failed to parse tag block: {e}")
+
+    # 3.2 扫描正文中的裸 JSON 结构 (兜底 OpenAI 格式)
+    # 模型有时会直接输出: {"name": "func", "arguments": {...}} 
+    # 或严格的 OpenAI 格式: {"type": "function", "function": {"name": "func", "arguments": "{...}"}}
+    decoder = json.JSONDecoder()
+    cursor = 0
+    while cursor < len(content):
+        start_idx = content.find('{', cursor)
+        if start_idx == -1: 
+            break
+        try:
+            obj, end_pos = decoder.raw_decode(content[start_idx:])
+            
+            is_valid_tool = False
+            name = None
+            args = None
+
+            # 情况 A: 严格的 OpenAI 嵌套格式 {"function": {"name": "...", "arguments": "..."}}
+            if isinstance(obj, dict) and "function" in obj and isinstance(obj["function"], dict):
+                name = obj["function"].get("name")
+                args = obj["function"].get("arguments")
+                is_valid_tool = True
+            
+            # 情况 B: 扁平化的格式 {"name": "...", "arguments": ...}
+            elif isinstance(obj, dict) and "name" in obj and "arguments" in obj:
+                name = obj.get("name")
+                args = obj.get("arguments")
+                is_valid_tool = True
+
+            if is_valid_tool and isinstance(name, str) and name != "think":
+                parsed_tool_calls.append(ToolCall(
+                    id=f"call_{uuid.uuid4().hex[:8]}", 
+                    name=name, 
+                    arguments=_parse_val(args)
+                ))
+                # 提取成功后，将该 JSON 块从正文中抹除
+                content = content[:start_idx] + content[start_idx + end_pos:]
+                # 注意：抹除后字符串变短，游标保持在原位继续扫描
+                cursor = start_idx 
+                continue 
+            
+            # 如果不是工具调用格式，跳过该 JSON
+            cursor = start_idx + end_pos
+        except json.JSONDecodeError:
+            cursor = start_idx + 1
+        except Exception as e:
+            logger.debug(f"JSON scan skip: {e}")
+            cursor = start_idx + 1
+
+    # 4. 最后清理正文：删除所有标签残留
+    content = re.sub(r"<(?:tool_call|/tool_call|\|python_tag\|)>", "", content)
+    
+    # 处理重复文本（复读机现象）
+    content = content.strip()
+    lines = [l.strip() for l in content.split('\n') if l.strip()]
+    if len(lines) > 2 and lines[:len(lines)//2] == lines[len(lines)//2:]:
+        content = "\n".join(lines[:len(lines)//2])
+
+    tool_calls = parsed_tool_calls if parsed_tool_calls else None
+    
+    # 如果既没有内容又没有工具调用，提供兜底以防系统崩溃
+    if not content and not tool_calls:
+        raw_preview = ""
+        try:
+            raw_preview = (getattr(response.message, "content", "") or "")[:300]
+        except Exception:
+            pass
+        logger.warning(
+            "Model returned an empty assistant message (no content, no tool_calls). Injecting fallback text. "
+            f"raw_preview={raw_preview!r}"
         )
-    tool_calls = parsed_tool_calls or None
+        content = "I'm sorry, I couldn't generate a valid response just now. Please try again."
+
+    if isinstance(content, str):
+        content = content.strip()
+        if content == "":
+            content = None
 
     message = AssistantMessage(
         role="assistant",
@@ -254,7 +374,7 @@ def generate(
         tool_calls=tool_calls,
         cost=cost,
         usage=usage,
-        raw_data=response.to_dict(),
+        raw_data=response.to_dict() if hasattr(response, "to_dict") else {},
     )
     return message
 

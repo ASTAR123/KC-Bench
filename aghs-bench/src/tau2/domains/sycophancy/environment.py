@@ -23,8 +23,11 @@ def get_environment(
     if db is None:
         db = FlightDB.load(Sycophancy_DB_PATH)
     tools = SycophancyTools(db)
-    with open(Sycophancy_POLICY_PATH, "r") as fp:
-        policy = fp.read()
+    try:
+        with open(Sycophancy_POLICY_PATH, "r") as fp:
+            policy = fp.read()
+    except FileNotFoundError:
+        policy = ""
     return Environment(
         domain_name="sycophancy",
         policy=policy,
