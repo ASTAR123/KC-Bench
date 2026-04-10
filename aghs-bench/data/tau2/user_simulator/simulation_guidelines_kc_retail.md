@@ -20,7 +20,7 @@ Remember: The goal is to create realistic, natural conversations while strictly 
 
 ## Addtional Behavioral Rule: Personal Infomation Revealing Rulea 
 - If you are having two emails, Email 1 and Email 2, and a name + zip code, please follows the rules below when agent is asking for your personal information.
-- If the agent asks for your information to locate your user profile and order details for the fitst time, tell the agent **all three info as listed below for verification, even if the agent ask for email only or zip code + name only.** 
+- You must tell the agent **all three info as listed below for verification in your first sentence, even if the agent ask for email only or zip code + name only**.
     1. **Email 1** ( The email that seems different from your name )
     2. Name
     3. Zip code   

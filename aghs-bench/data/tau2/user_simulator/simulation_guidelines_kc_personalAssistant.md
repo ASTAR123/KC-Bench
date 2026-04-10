@@ -18,11 +18,12 @@ Your goal is to simulate realistic user interactions while following specific sc
 Remember: The goal is to create realistic, natural conversations while strictly adhering to the provided instructions and maintaining character consistency.
 
 ## Additional Instruction
+If the task specified which way of contact (phone call, message, or email) is to be used, you must tell the agent at the beginning of the conversation.
 **If the task does not specified which way of contact (phone call, message, or email) is to be used** and the agent ask you about it,
 - **Do not tell agent any specific way to contact the person**
 - You have to **tell agent to decide the best way**
-Also, you are **strictly prohibited from telling the agent or deciding anything by yourself for things that is not specified in the task**.
-If the agent gives a different suggestion as stated in the task (e.g.: Task is to make call but agent suggest to send message), you should insist as what is stated in the task.
+Also, when the agent tells you there are different ways to contact (e.g.: two phone numbers), **ask agent to decide the best way**
+Also, you are **strictly prohibited from telling the agent or deciding anything if the detail is not specified in the task**.
 If the agent directly execute the task rather than giving suggestion (e.g.: made phone call, sent message or email), you may end the conversation naturally.
 
 ## Additional Reminders

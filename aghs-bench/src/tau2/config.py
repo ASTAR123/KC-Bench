@@ -12,26 +12,33 @@ DEFAULT_AGENT_IMPLEMENTATION = "llm_agent"
 DEFAULT_USER_IMPLEMENTATION = "user_simulator"
 
 # DEFAULT_LLM_AGENT = "openai/glm"
-# DEFAULT_LLM_AGENT = "openai/llama3.3-70b"
-# DEFAULT_LLM_AGENT = "openai/Qwen/Qwen3-32B"
-# DEFAULT_LLM_AGENT = "openai/Qwen/Qwen2.5-72B-Instruct"
+# DEFAULT_LLM_AGENT = "openai/llama3.3-70B"
+# DEFAULT_LLM_AGENT = "openai/Qwen/Qwen35B"
+DEFAULT_LLM_AGENT = "openai/Llama-4"
+# DEFAULT_LLM_AGENT = "openai/gpt"
 
-DEFAULT_LLM_AGENT = "openai/gpt-5.1"
+
+# DEFAULT_LLM_AGENT = "openai/gpt-5.1"
 # DEFAULT_LLM_AGENT = "claude-haiku-4-5-20251001"
 # DEFAULT_LLM_AGENT = "gemini-3-flash-preview"
 
 
 # DEFAULT_LLM_USER = "openai/glm"
 # DEFAULT_LLM_NL_ASSERTIONS = "openai/glm"
-# DEFAULT_LLM_USER = "openai/Qwen/Qwen3-32B"
-# DEFAULT_LLM_NL_ASSERTIONS = "openai/Qwen/Qwen3-32B"
-# DEFAULT_LLM_USER = "openai/claude-haiku-4-5-20251001"
+# DEFAULT_LLM_USER = "openai/llama3.3-70B"
+# DEFAULT_LLM_NL_ASSERTIONS = "openai/llama3.3-70B"
+# DEFAULT_LLM_USER = "openai/Qwen/Qwen35B"
+# DEFAULT_LLM_NL_ASSERTIONS = "openai/Qwen/Qwen35B"
+# DEFAULT_LLM_USER = "openai/deepseek_r1_distill_llama_70B"
+# DEFAULT_LLM_NL_ASSERTIONS = "openai/deepseek_r1_distill_llama_70B"
+DEFAULT_LLM_USER = "openai/Llama-4"
+DEFAULT_LLM_NL_ASSERTIONS = "openai/Llama-4"
+# DEFAULT_LLM_USER = "openai/gpt"
+# DEFAULT_LLM_NL_ASSERTIONS = "openai/gpt"
 
 
-DEFAULT_LLM_USER = "openai/Qwen/Qwen2.5-72B-Instruct"
-DEFAULT_LLM_NL_ASSERTIONS = "openai/Qwen/Qwen2.5-72B-Instruct"
-# DEFAULT_LLM_USER = "openai/llama3.3-70b"
-# DEFAULT_LLM_NL_ASSERTIONS = "openai/llama3.3-70b"
+# DEFAULT_LLM_USER = "openai/Qwen/Qwen2.5-72B-Instruct"
+# DEFAULT_LLM_NL_ASSERTIONS = "openai/Qwen/Qwen2.5-72B-Instruct"
 # DEFAULT_LLM_USER = "openai/gpt-4o"
 # DEFAULT_LLM_NL_ASSERTIONS = "openai/gpt-4o"
 
@@ -40,11 +47,7 @@ DEFAULT_LLM_NL_ASSERTIONS = "openai/Qwen/Qwen2.5-72B-Instruct"
 # DEFAULT_LLM_ENV_INTERFACE = "openai/deepseek"
 # DEFAULT_LLM_ENV_INTERFACE = "openai/Qwen/Qwen2.5-72B-Instruct"
 
-# DEFAULT_LLM_USER = "openai/gpt-4o"
-# DEFAULT_LLM_USER = "openai/glm"
-# DEFAULT_LLM_USER = "openai/deepseek"
-# DEFAULT_LLM_USER = "openai/Qwen/Qwen3-32B"
-# DEFAULT_LLM_USER = "openai/Qwen/Qwen2.5-72B-Instruct"
+
 
 DEFAULT_LLM_TEMPERATURE_AGENT = 0.0
 DEFAULT_LLM_TEMPERATURE_USER = 0.0

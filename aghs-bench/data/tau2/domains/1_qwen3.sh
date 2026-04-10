@@ -7,16 +7,16 @@ export VLLM_HTTP_CONNECTION_TIMEOUT=3600
 export VLLM_API_TIMEOUT=3600
 
 
-PYTHON_EXEC=/mnt/shared-storage-user/lvyaxing/envs/scale_tau/bin/python
+PYTHON_EXEC=/mnt/shared-storage-user/lvyaxing/envs/qwen35/bin/python
 LITELLM_EXEC=/mnt/shared-storage-user/lvyaxing/envs/scale_tau/bin/litellm
 
 
 # --- 1. 自动生成 LiteLLM 配置文件 (注入禁用思考参数) ---
 cat <<EOF > ./litellm_config.yaml
 model_list:
-  - model_name: Qwen/Qwen3-32B
+  - model_name: Qwen/Qwen35B
     litellm_params:
-      model: openai/Qwen/Qwen3-32B
+      model: openai/Qwen/Qwen35B
       api_base: http://localhost:8000/v1
       timeout: 3600
       api_key: local-testing
@@ -28,8 +28,8 @@ EOF
 
 # --- 2. 启动 vLLM 服务 (Port 8000) ---
 $PYTHON_EXEC -m vllm.entrypoints.openai.api_server \
-    --model /mnt/shared-storage-user/ai4good2-share/models/Qwen/Qwen3-32B  \
-    --served-model-name Qwen/Qwen3-32B \
+    --model /mnt/shared-storage-user/ai4good2-share/models/Qwen/Qwen3.5-35B-A3B  \
+    --served-model-name Qwen/Qwen35B \
     --tensor-parallel-size 2 \
     --port 8000 \
     --max-model-len 131072 \
@@ -60,12 +60,12 @@ export OPENAI_API_KEY=local-testing
 
 echo "开始运行 tau2 评测 (已禁用 Thinking)..."
 $PYTHON_EXEC -m tau2.cli run \
-    --domain sycophancy \
-    --agent-llm openai/Qwen/Qwen3-32B \
-    --user-llm openai/Qwen/Qwen3-32B \
-    --num-trials 1 \
+    --domain knowledge_conflict \
+    --agent-llm openai/Qwen/Qwen35B \
+    --user-llm openai/Qwen/Qwen35B \
+    --num-trials 300 \
     --max-concurrency 5 \
-    --max-step 120
+    --max-step 30
 
 # 任务结束后清理进程 (可选)
 # pkill -f vllm

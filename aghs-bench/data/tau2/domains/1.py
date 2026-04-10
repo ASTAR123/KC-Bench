@@ -1,0 +1,3 @@
+from openai_harmony import load_harmony_encoding, HarmonyEncodingName
+
+load_harmony_encoding(HarmonyEncodingName.HARMONY_GPT_OSS)

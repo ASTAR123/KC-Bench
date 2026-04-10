@@ -62,7 +62,7 @@ $PYTHON_EXEC -m tau2.cli run \
     --domain knowledge_conflict \
     --agent-llm openai/Qwen/Qwen2.5-72B-Instruct \
     --user-llm openai/Qwen/Qwen2.5-72B-Instruct \
-    --num-trials 1 \
+    --num-trials 10 \
     --max-concurrency 5 \
     --max-step 30
 

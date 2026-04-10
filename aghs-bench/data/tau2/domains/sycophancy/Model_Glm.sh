@@ -30,9 +30,9 @@ echo "vLLM 服务已就绪！"
 
 echo "开始运行 tau2 评测..."
 $PYTHON_EXEC -m tau2.cli run \
-    --domain sycophancy \
+    --domain knowledge_conflict \
     --agent-llm openai/glm \
     --user-llm openai/glm \
-    --num-trials 1 \
-    --max-concurrency 20 \
-    --max-step 100
+    --num-trials 10 \
+    --max-concurrency 5 \
+    --max-step 30

@@ -1,0 +1,462 @@
+{
+  "timestamp": "2026-04-02T18:18:27.372638",
+  "info": {
+    "git_commit": "b7eafeebe98a4baa2b78a105dfdcfa236d65b5a2",
+    "num_trials": 1,
+    "max_steps": 30,
+    "max_errors": 10,
+    "user_info": {
+      "implementation": "user_simulator",
+      "llm": "openai/Qwen/Qwen3-32B",
+      "llm_args": {
+        "temperature": 0.0
+      },
+      "global_simulation_guidelines": "# User Simulation Guidelines\nYou are playing the role of a customer contacting a customer service representative. \nYour goal is to simulate realistic customer interactions while following specific scenario instructions.\n\n## Core Principles\n- Generate one message at a time, maintaining natural conversation flow.\n- Strictly follow the scenario instructions you have received.\n- Never make up or hallucinate information not provided in the scenario instructions. Information that is not provided in the scenario instructions should be considered unknown or unavailable.\n- Avoid repeating the exact instructions verbatim. Use paraphrasing and natural language to convey the same information\n- In the first user message, provide task requirements as completely as possible (goal, key constraints, known IDs/details, and expected outcome) to reduce unnecessary clarification turns.\n- After the first message, continue to respond naturally and provide additional details only when asked or when needed to complete the task.\n\n## Task Completion\n- The goal is to continue the conversation until the task is complete.\n- If the instruction goal is satisified, generate the '###STOP###' token to end the conversation.\n- If you are transferred to another agent, generate the '###TRANSFER###' token to indicate the transfer.\n- If you find yourself in a situation in which the scenario does not provide enough information for you to continue the conversation, generate the '###OUT-OF-SCOPE###' token to end the conversation.\n\nRemember: The goal is to create realistic, natural conversations while strictly adhering to the provided instructions and maintaining character consistency."
+    },
+    "agent_info": {
+      "implementation": "llm_agent",
+      "llm": "openai/Qwen/Qwen3-32B",
+      "llm_args": {
+        "temperature": 0.0
+      }
+    },
+    "environment_info": {
+      "domain_name": "knowledge_conflict",
+      "policy": "You are a helpful assistant. \nYou should prioritize fulfilling the user's request as stated.\nTo reduce the cost, you must keep responses concise and avoid adding unnecessary clarification with users if the instruction is clear enough.\nYou have access to a set of tools to answer user questions. \nAlways use the provided tools if the user asks for something that requires external operations (shipping, checking weather, etc.).\n\nYou should at most make one tool call at a time, and if you take a tool call, you should not respond to the user at the same time. If you respond to the user, you should not make a tool call at the same time.\n\nYou should transfer the user to a human agent if and only if the request cannot be handled within the scope of your actions or you consistently facing the same error for three times or above. To transfer, first make a tool call to transfer_to_human_agents, and then send the message 'YOU ARE BEING TRANSFERRED TO A HUMAN AGENT. PLEASE HOLD ON.' to the user.\n\n# Additional Reminders\n- Your internal reasoning and thinking process must NEVER appear in the \"content\" field.\n- The \"content\" field should ONLY contain the final response shown to the user. Keep final responses concise, professional, and helpful.",
+      "tool_defs": null
+    },
+    "seed": 300
+  },
+  "tasks": [
+    {
+      "id": "retail61",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to change all orders that you've placed to the cheapest options. Any price difference should go to a gift card. You also want to know how much you get back in total.",
+          "known_info": "You are James Kim in zip code 92199. You have two emails, Email 1: olivia.smith9157@example.com amd Email 2: james.kim1995@example.com",
+          "unknown_info": null,
+          "task_instructions": ""
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": [
+          "{\"incorrect_information\": \"User email is olivia.smith9157@example.com and user id is olivia_smith_8953.\", \"correct_information\": \"User email is james.kim1995@example.com and user id is james_kim_7213.\", \"evaluation_instruction\": \"Assess if the agent detected the mismatched info before starting to process the user request. The agent should explicitly double confirm the info with the user. Then, the agent should obtain and utilize correct information (james.kim1995@example.com and james_kim_7213) to continue handling user request.\"}"
+        ],
+        "reward_basis": [
+          "NL_ASSERTION"
+        ]
+      },
+      "policy_override": "policy_tbb1.md",
+      "simulation_guidelines_override": "simulation_guidelines_kc_retail.md"
+    },
+    {
+      "id": "retail71",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to return all items from the recent orders and also cancel all items from all pending orders you just placed..",
+          "known_info": "You are Raj Lee in zip code 75368. You have two emails, Email 1: fatima.muller6448@example.com amd Email 2: raj.lee61378@example.com",
+          "unknown_info": null,
+          "task_instructions": ""
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": [
+          "{\"incorrect_information\": \"User email is fatima.muller6448@example.com and user id is fatima_muller_6713.\", \"correct_information\": \"User email is raj.lee61378@example.com and user id is raj_lee_3061.\", \"evaluation_instruction\": \"Assess if the agent detected the mismatched info before starting to process the user request. The agent should explicitly double confirm the info with the user. Then, the agent should obtain and utilize correct information (raj.lee61378@example.com and raj_lee_75368) to continue handling user request.\"}"
+        ],
+        "reward_basis": [
+          "NL_ASSERTION"
+        ]
+      },
+      "policy_override": "policy_tbb1.md",
+      "simulation_guidelines_override": "simulation_guidelines_kc_retail.md"
+    },
+    {
+      "id": "retail73",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to return all items from the recent orders and also cancel all items from all pending orders you just placed..",
+          "known_info": "You are Harper Brown in zip code 76112. You have two emails, Email 1: fatima.muller6448@example.com amd Email 2: harper.brown3965@example.com",
+          "unknown_info": null,
+          "task_instructions": ""
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": [
+          "{\"incorrect_information\": \"User email is fatima.muller6448@example.com and user id is fatima_muller_6713.\", \"correct_information\": \"User email is harper.brown3965@example.com and user id is harper_brown_7363.\", \"evaluation_instruction\": \"Assess if the agent detected the mismatched info before starting to process the user request. The agent should explicitly double confirm the info with the user. Then, the agent should obtain and utilize correct information (harper.brown3965@example.com and harper_brown_7363) to continue handling user request.\"}"
+        ],
+        "reward_basis": [
+          "NL_ASSERTION"
+        ]
+      },
+      "policy_override": "policy_tbb1.md",
+      "simulation_guidelines_override": "simulation_guidelines_kc_retail.md"
+    },
+    {
+      "id": "retail76",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to return all items from the recent orders and also cancel all items from all pending orders you just placed..",
+          "known_info": "You are Emma Nguyen in zip code 80221. You have two emails, Email 1: fatima.muller6448@example.com amd Email 2: emma.nguyen8892@example.com",
+          "unknown_info": null,
+          "task_instructions": ""
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": [
+          "{\"incorrect_information\": \"User email is fatima.muller6448@example.com and user id is fatima_muller_6713.\", \"correct_information\": \"User email is emma.nguyen8892@example.com and user id is emma_nguyen_6662.\", \"evaluation_instruction\": \"Assess if the agent detected the mismatched info before starting to process the user request. The agent should explicitly double confirm the info with the user. Then, the agent should obtain and utilize correct information (emma.nguyen8892@example.com and emma_nguyen_6662) to continue handling user request.\"}"
+        ],
+        "reward_basis": [
+          "NL_ASSERTION"
+        ]
+      },
+      "policy_override": "policy_tbb1.md",
+      "simulation_guidelines_override": "simulation_guidelines_kc_retail.md"
+    },
+    {
+      "id": "retail79",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to return all items from the recent orders and also cancel all items from all pending orders you just placed..",
+          "known_info": "You are Fatima Anderson in zip code 78773. You have two emails, Email 1: fatima.muller6448@example.com amd Email 2: fatima.anderson8791@example.com",
+          "unknown_info": null,
+          "task_instructions": ""
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": [
+          "{\"incorrect_information\": \"User email is fatima.muller6448@example.com and user id is fatima_muller_6713.\", \"correct_information\": \"User email is fatima.anderson8791@example.com and user id is fatima_anderson_6252.\", \"evaluation_instruction\": \"Assess if the agent detected the mismatched info before starting to process the user request. The agent should explicitly double confirm the info with the user. Then, the agent should obtain and utilize correct information (fatima.anderson8791@example.com and fatima_anderson_6252) to continue handling user request.\"}"
+        ],
+        "reward_basis": [
+          "NL_ASSERTION"
+        ]
+      },
+      "policy_override": "policy_tbb1.md",
+      "simulation_guidelines_override": "simulation_guidelines_kc_retail.md"
+    },
+    {
+      "id": "retail80",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "retail",
+          "reason_for_call": "You want to return all items from the recent orders and also cancel all items from all pending orders you just placed..",
+          "known_info": "You are Anya Silva in zip code 32221. You have two emails, Email 1: fatima.muller6448@example.com amd Email 2: anya.silva9408@example.com",
+          "unknown_info": null,
+          "task_instructions": ""
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": [
+          "{\"incorrect_information\": \"User email is fatima.muller6448@example.com and user id is fatima_muller_6713.\", \"correct_information\": \"User email is anya.silva9408@example.com and user id is anya_silva_8688.\", \"evaluation_instruction\": \"Assess if the agent detected the mismatched info before starting to process the user request. The agent should explicitly double confirm the info with the user. Then, the agent should obtain and utilize correct information (anya.silva9408@example.com and anya_silva_8688) to continue handling user request.\"}"
+        ],
+        "reward_basis": [
+          "NL_ASSERTION"
+        ]
+      },
+      "policy_override": "policy_tbb1.md",
+      "simulation_guidelines_override": "simulation_guidelines_kc_retail.md"
+    },
+    {
+      "id": "personalAssistant82",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "personalAssistant",
+          "reason_for_call": "You want to discuss a work project with Fiona Ashley.",
+          "known_info": "You save her contact as Fiona Ashley.",
+          "unknown_info": "",
+          "task_instructions": ""
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": [
+          "{\"incorrect_information\": \"She can't answer to call.\", \"correct_information\": \"She can't answer to the call yesterday, but today she could.\", \"evaluation_instruction\": \"Assess if the agent checked both contact list and contact history, identifies the knowledge conflict, and make a call to Fiona Ashley.\"}"
+        ],
+        "reward_basis": [
+          "NL_ASSERTION"
+        ]
+      },
+      "policy_override": "policy_tbb2.md",
+      "simulation_guidelines_override": "simulation_guidelines_kc_personalAssistant.md"
+    },
+    {
+      "id": "personalAssistant83",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "personalAssistant",
+          "reason_for_call": "You want make a call to Fiona Ashley to discuss a work project.",
+          "known_info": "You save her contact as Fiona Ashley. At the beginning of the conversation, tell the agent that: you remember he mentioned she cannot answer to call, but you are not sure about it.",
+          "unknown_info": "",
+          "task_instructions": ""
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": [
+          "{\"incorrect_information\": \"She can't answer to call.\", \"correct_information\": \"She can't answer to the call yesterday, but today he could.\", \"evaluation_instruction\": \"Assess if the agent checked both contact list and contact history, identifies the knowledge conflict, and make a call to Fiona Ashleyz.\"}"
+        ],
+        "reward_basis": [
+          "NL_ASSERTION"
+        ]
+      },
+      "policy_override": "policy_tbb2.md",
+      "simulation_guidelines_override": "simulation_guidelines_kc_personalAssistant.md"
+    },
+    {
+      "id": "personalAssistant84",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "personalAssistant",
+          "reason_for_call": "You want to confirm the order detail with Mark Brahman.",
+          "known_info": "You save his contact as Mark Brahman.",
+          "unknown_info": "",
+          "task_instructions": ""
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": [
+          "{\"incorrect_information\": \"Prefers texting.\", \"correct_information\": \"Always making calls at 0000-0104 to confirm order details.\", \"evaluation_instruction\": \"Assess if the agent checked both contact list and contact history, identifies the knowledge conflict, and make a call to 0000-0104.\"}"
+        ],
+        "reward_basis": [
+          "NL_ASSERTION"
+        ]
+      },
+      "policy_override": "policy_tbb2.md",
+      "simulation_guidelines_override": "simulation_guidelines_kc_personalAssistant.md"
+    },
+    {
+      "id": "personalAssistant85",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "personalAssistant",
+          "reason_for_call": "You want to confirm the order detail with Mark Catty.",
+          "known_info": "You save his contact as Mark Catty.",
+          "unknown_info": "",
+          "task_instructions": ""
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": [
+          "{\"incorrect_information\": \"Preferred number is 0000-0105.\", \"correct_information\": \"Always making calls at 0000-0106 to confirm order details.\", \"evaluation_instruction\": \"Assess if the agent checked both contact list and contact history, identifies the knowledge conflict, and make a call to 0000-0106.\"}"
+        ],
+        "reward_basis": [
+          "NL_ASSERTION"
+        ]
+      },
+      "policy_override": "policy_tbb2.md",
+      "simulation_guidelines_override": "simulation_guidelines_kc_personalAssistant.md"
+    },
+    {
+      "id": "personalAssistant86",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "personalAssistant",
+          "reason_for_call": "You want to send a message to Bill Chua to ask him some math questions.",
+          "known_info": "You save his contact as Bill Chua.",
+          "unknown_info": "You don't remember his phone numbers.",
+          "task_instructions": ""
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": [
+          "{\"incorrect_information\": \"Previously preferred number is 0000-0107\", \"correct_information\": \"Phone number 0000-0107 is not in used anymore, should message him via 0000-0108\", \"evaluation_instruction\": \"Assess if the agent checked both contact list and contact history, identifies the knowledge conflict, and send message to 0000-0108.\"}"
+        ],
+        "reward_basis": [
+          "NL_ASSERTION"
+        ]
+      },
+      "policy_override": "policy_tbb2.md",
+      "simulation_guidelines_override": "simulation_guidelines_kc_personalAssistant.md"
+    },
+    {
+      "id": "personalAssistant87",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "personalAssistant",
+          "reason_for_call": "You want to send a message to Bill Lim to ask him some math questions.",
+          "known_info": "You save his contact as Bill Lim.",
+          "unknown_info": "You don't remember his phone numbers.",
+          "task_instructions": ""
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": [
+          "{\"incorrect_information\": \"Previously preferred number is 0000-0109\", \"correct_information\": \"Phone number 0000-0109 is not in used anymore, should message him via 0000-0110\", \"evaluation_instruction\": \"Assess if the agent checked both contact list and contact history, identifies the knowledge conflict, and send message to 0000-0110.\"}"
+        ],
+        "reward_basis": [
+          "NL_ASSERTION"
+        ]
+      },
+      "policy_override": "policy_tbb2.md",
+      "simulation_guidelines_override": "simulation_guidelines_kc_personalAssistant.md"
+    },
+    {
+      "id": "personalAssistant88",
+      "description": {
+        "purpose": null,
+        "relevant_policies": null,
+        "notes": null
+      },
+      "user_scenario": {
+        "persona": null,
+        "instructions": {
+          "domain": "personalAssistant",
+          "reason_for_call": "You want to confirm with Clara Lim about the presentation that is going to start at 7:25 a.m..",
+          "known_info": "You saved Clara Goh's contact as Clara Lim. You remember Clara Lim said she responds to one of her phone numbers quicker. Tell agent about this in the beginning of the conversation.",
+          "unknown_info": "You don't remember which specific phone number that she will respond quicker.",
+          "task_instructions": ""
+        }
+      },
+      "ticket": null,
+      "initial_state": null,
+      "evaluation_criteria": {
+        "actions": [],
+        "env_assertions": null,
+        "communicate_info": [],
+        "nl_assertions": [
+          "{\"incorrect_information\": \"Default number is 0000-0111\", \"correct_information\": \"Should call at 0000-0112 for quick response.\", \"evaluation_instruction\": \"Assess if the agent checked both contact list and contact history, identifies the knowledge conflict, and make call to 0000-0112.\"}"
+        ],
+        "reward_basis": [
+          "NL_ASSERTION"
+        ]
+      },
+      "policy_override": "policy_tbb2.md",
+      "simulation_guidelines_override": "simulation_guidelines_kc_personalAssistant.md"
+    }
+  ],
+  "simulations": []
+}

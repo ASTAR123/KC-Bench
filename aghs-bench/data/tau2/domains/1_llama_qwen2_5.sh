@@ -9,9 +9,9 @@ export VLLM_ALLOW_LONG_MAX_MODEL_LEN=1
 
 cat <<EOF > ./litellm_config.yaml
 model_list:
-  - model_name: llama3.3-70b
+  - model_name: llama3.3-70B
     litellm_params:
-      model: openai/llama3.3-70b
+      model: openai/llama3.3-70B
       api_base: http://localhost:8000/v1
       api_key: local-testing
       timeout: 3600
@@ -32,7 +32,7 @@ EOF
 # --- 1. 启动 Llama-3.3-70B (Port 8000, GPU 0,1) ---
 CUDA_VISIBLE_DEVICES=0,1 $PYTHON_EXEC -m vllm.entrypoints.openai.api_server \
     --model /mnt/shared-storage-user/ai4good2-share/models/meta-llama/Llama-3.3-70B-Instruct \
-    --served-model-name llama3.3-70b \
+    --served-model-name llama3.3-70B \
     --tensor-parallel-size 2 \
     --port 8000 \
     --max-model-len 131072 \
@@ -101,17 +101,17 @@ export OPENAI_API_KEY=local-testing
 #     --max-concurrency 1 \
 #     --max-step 120
 
-$PYTHON_EXEC -m tau2.cli run \
-    --domain faithfulness \
-    --agent-llm openai/llama3.3-70b \
-    --user-llm openai/Qwen/Qwen2.5-72B-Instruct \
-    --num-trials 1 \
-    --max-concurrency 1 \
-    --max-step 30
-
 # $PYTHON_EXEC -m tau2.cli run \
-#     --domain knowledge_conflict \
+#     --domain faithfulness \
 #     --agent-llm openai/llama3.3-70b \
 #     --user-llm openai/Qwen/Qwen2.5-72B-Instruct \
 #     --num-trials 1 \
-#     --max-step 120
+#     --max-concurrency 1 \
+#     --max-step 30
+
+$PYTHON_EXEC -m tau2.cli run \
+    --domain knowledge_conflict \
+    --agent-llm openai/llama3.3-70B \
+    --user-llm openai/Qwen/Qwen2.5-72B-Instruct \
+    --num-trials 1 \
+    --max-step 30

@@ -2,7 +2,7 @@
 
 export CUDA_VISIBLE_DEVICES=0,1
 export VLLM_ALLOW_LONG_MAX_MODEL_LEN=1
-export OPENAI_API_BASE=http://localhost:8001/v1
+export OPENAI_API_BASE=http://localhost:8000/v1
 export OPENAI_API_KEY=local-testing
 export VLLM_HTTP_CONNECTION_TIMEOUT=3600
 export VLLM_API_TIMEOUT=3600
@@ -23,7 +23,7 @@ $PYTHON_EXEC -m vllm.entrypoints.openai.api_server \
 
 echo "正在等待模型加载 (预计 2-5 分钟)..."
 # 循环检查 8000 端口是否连通
-while ! curl -s http://localhost:8001/v1/models > /dev/null; do
+while ! curl -s http://localhost:8000/v1/models > /dev/null; do
     sleep 10
     echo "模型加载中，请稍候..."
 done

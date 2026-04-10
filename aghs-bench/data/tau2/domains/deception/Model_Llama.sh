@@ -18,7 +18,8 @@ $PYTHON_EXEC -m vllm.entrypoints.openai.api_server \
     --hf-overrides '{"rope_scaling": {"rope_type": "dynamic", "factor": 4.0}, "max_position_embeddings": 131072}' \
     --enforce-eager \
     --enable-auto-tool-choice \
-    --tool-call-parser llama3_json &
+    --trust-remote-code \
+    --tool-call-parser hermes &
 
 echo "正在等待模型加载 (预计 2-5 分钟)..."
 # 循环检查 8000 端口是否连通
@@ -39,12 +40,12 @@ echo "vLLM 服务已就绪！"
 
 echo "开始运行 tau2 评测2..."
 $PYTHON_EXEC -m tau2.cli run \
-    --domain sycophancy \
+    --domain knowledge_conflict \
     --agent-llm openai/llama3.3-70b \
     --user-llm openai/llama3.3-70b \
     --num-trials 1 \
     --max-concurrency 5 \
-    --max-step 100
+    --max-step 30
 
 
 

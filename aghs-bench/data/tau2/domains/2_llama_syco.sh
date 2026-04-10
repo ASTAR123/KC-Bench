@@ -10,7 +10,7 @@ PYTHON_EXEC=/mnt/shared-storage-user/lvyaxing/envs/scale_tau/bin/python
 
 # --- 2. 启动 vLLM 服务 (Port 8000) ---
 $PYTHON_EXEC -m vllm.entrypoints.openai.api_server \
-    --model /mnt/shared-storage-user/ai4good2-share/models/meta-llama/Llama-3.3-70B-Instruct \
+    --model /mnt/shared-storage-user/ai4good2-share/models/meta-llama/Llama-3.1-70B-Instruct \
     --served-model-name llama3.3-70b \
     --tensor-parallel-size 2 \
     --port 8000 \
