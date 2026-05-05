@@ -36,6 +36,11 @@ class ConflictTools(ToolKitBase):
                 matches.append(entity)
         return matches
 
+
+
+
+
+    # Travel
     @is_tool(ToolType.READ)
     def calculate_shipping(self, origin_city: str) -> Dict[str, Any]:
         """Calculate shipping costs based on the origin city. 
@@ -289,6 +294,30 @@ class ConflictTools(ToolKitBase):
             "citizenship": citizenship_country,
             "verified_citizens": citizens
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     # ---------------- Retail tools (from tbb1) ----------------
     def _get_order(self, order_id: str) -> Order:
@@ -878,6 +907,24 @@ class ConflictTools(ToolKitBase):
         order.return_payment_method_id = payment_method_id
         return order
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @is_tool(ToolType.GENERIC)
     def transfer_to_human_agents(self, summary: str) -> str:
         """
@@ -893,6 +940,54 @@ class ConflictTools(ToolKitBase):
             A message indicating the user has been transferred to a human agent.
         """
         return "Transfer successful"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     # ---------------- Personal assistant tools (from tbb2) ----------------
     def _find_contact_by_name(self, name: str) -> List[Dict[str, Any]]:
@@ -1110,6 +1205,21 @@ class ConflictTools(ToolKitBase):
             raise ValueError(f"No historical records found containing keyword: '{keyword}'")
 
         return json.dumps(results, indent=2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 if __name__ == "__main__":

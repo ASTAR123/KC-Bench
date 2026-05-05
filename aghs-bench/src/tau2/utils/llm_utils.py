@@ -236,13 +236,11 @@ def generate(
     raw_tool_calls = getattr(response.message, "tool_calls", None) or []
     parsed_tool_calls = []
 
-    # 1. 彻底移除思考逻辑 (Thinking)
     content = re.sub(r"<think>.*?</think>", "", content, flags=re.DOTALL)
     if "</think>" in content:
         content = re.sub(r".*?</think>", "", content, flags=re.DOTALL)
     content = re.sub(r"<think>.*$", "", content, flags=re.DOTALL).strip()
 
-    # 定义内部小工具函数
     def _parse_val(v):
         if isinstance(v, (dict, list)): return v
         if not v: return {}
@@ -251,10 +249,8 @@ def generate(
             try: return ast.literal_eval(v)
             except: return v
 
-    # 2. 首先处理模型通过官方 API 成功解析的标准 tool_calls
     for tc in raw_tool_calls:
         try:
-            # 兼容不同版本的 litellm/OpenAI 返回结构
             func = getattr(tc, "function", tc)
             func_name = getattr(func, "name", None)
             func_args = getattr(func, "arguments", "{}")
@@ -270,147 +266,139 @@ def generate(
         except Exception as e:
             logger.warning(f"Failed to parse standard tool arguments: {e}")
 
-    # 3. 增强解析：从 content 文本中提取“隐藏”的工具调用（支持 OpenAI 与 Hermes 格式）
-    
-    # 3.1 提取带有标签的块 (Hermes / Python tag / python_start-end)
-    combined_pattern = (
-        r"(?:<tool_call>|<\|python_tag\|>|<\|python_start\|>)"
-        r"(.*?)"
-        r"(?:</tool_call>|<\|python_end\|>|(?=<tool_call>)|(?=<\|python_tag\|>)|(?=<\|python_start\|>)|$)"
-    )
-    found_blocks = re.findall(combined_pattern, content, re.DOTALL)
 
-    for block in found_blocks:
-        try:
-            json_match = re.search(r"\{.*\}", block, re.DOTALL)
-            if json_match:
-                obj = json.loads(json_match.group())
+    if not raw_tool_calls:
+            content = re.sub(r"\*\*Tool Call:\*\*", "", content)
+            combined_pattern = (
+                r"(?:<tool_call>|<\|python_tag\|>|<\|python_start\|>)"
+                r"(.*?)"
+                r"(?:</tool_call>|<\|python_end\|>|(?=<tool_call>)|(?=<\|python_tag\|>)|(?=<\|python_start\|>)|$)"
+            )
+            matches = list(re.finditer(combined_pattern, content, re.DOTALL))
+            for match in reversed(matches):
+                block = match.group(1)
+                full_match_text = match.group(0) 
+                try:
+                    json_match = re.search(r"\{.*\}", block, re.DOTALL)
+                    if json_match:
+                        obj = json.loads(json_match.group())
+                        name = None
+                        args = None
+                        if isinstance(obj, dict):
+                            name = obj.get("action") or obj.get("name") or obj.get("tool")
+                            args = obj.get("parameters") or obj.get("arguments") or obj.get("content")
+                            if obj.get("type") == "function" and not name:
+                                name = obj.get("name")
+                                args = obj.get("parameters") or obj.get("arguments")
 
-                name = None
-                args = None
+                        if name:
+                            parsed_tool_calls.append(ToolCall(
+                                id=f"call_{uuid.uuid4().hex[:8]}",
+                                name=name,
+                                arguments=_parse_val(args) if args is not None else {}
+                            ))
+                     
+                            content = content[:match.start()] + content[match.end():]
+                except Exception as e:
+                    logger.debug(f"Failed to parse tag block: {e}")
 
-                # 格式 A: {"type":"function","name":"xxx","parameters":{...}}
-                if isinstance(obj, dict) and obj.get("type") == "function":
-                    name = obj.get("name")
-                    args = obj.get("arguments") or obj.get("parameters") or {}
+           
+            decoder = json.JSONDecoder()
+            cursor = 0
+            while cursor < len(content):
+                start_idx = content.find('{', cursor)
+                if start_idx == -1: 
+                    break
+                try:
+                    obj, end_pos = decoder.raw_decode(content[start_idx:])
+                    
+                    is_valid_tool = False
+                    name = None
+                    args = None
 
-                # 格式 B: {"name":"xxx","arguments":{...}} / {"name":"xxx","parameters":{...}}
-                elif isinstance(obj, dict):
-                    name = obj.get("name") or obj.get("tool")
-                    args = obj.get("arguments") or obj.get("parameters")
+                    if isinstance(obj, dict) and "function" in obj and isinstance(obj["function"], dict):
+                        name = obj["function"].get("name")
+                        args = obj["function"].get("arguments")
+                        is_valid_tool = True
+                    
+                    elif isinstance(obj, dict) and "name" in obj and ("arguments" in obj or "parameters" in obj):
+                        name = obj.get("name")
+                        args = obj.get("arguments") or obj.get("parameters")
+                        is_valid_tool = True
 
-                if name:
+                    elif (
+                        isinstance(obj, dict)
+                        and obj.get("type") == "function"
+                        and "name" in obj
+                        and "parameters" in obj
+                    ):
+                        name = obj.get("name")
+                        args = obj.get("parameters")
+                        is_valid_tool = True
+
+                    elif (
+                        isinstance(obj, dict)
+                        and obj.get("type") == "function"
+                        and "name" in obj
+                        and "arguments" in obj
+                    ):
+                        name = obj.get("name")
+                        args = obj.get("arguments")
+                        is_valid_tool = True
+                        
+                    elif isinstance(obj, dict) and "action" in obj:
+                        name = obj.get("action")
+                        args = obj.get("parameters") or obj.get("content")
+                        is_valid_tool = True
+
+                    if is_valid_tool and isinstance(name, str) and name != "think":
+                        final_args = _parse_val(args)
+                        if not isinstance(final_args, dict) and final_args is not None:
+                            final_args = {"content": final_args}
+                            
+                        parsed_tool_calls.append(ToolCall(
+                            id=f"call_{uuid.uuid4().hex[:8]}", 
+                            name=name, 
+                            arguments=final_args if final_args is not None else {}
+                        ))
+                        content = content[:start_idx] + content[start_idx + end_pos:]
+                        cursor = start_idx 
+                        continue 
+                    
+                    cursor = start_idx + end_pos
+                except json.JSONDecodeError:
+                    cursor = start_idx + 1
+                except Exception as e:
+                    logger.debug(f"JSON scan skip: {e}")
+                    cursor = start_idx + 1
+
+
+            xml_func_pattern = r"<function=(?P<name>[^>]+)>(?P<body>.*?)</function>"
+            xml_param_pattern = r"<parameter=(?P<key>[^>]+)>(?P<val>.*?)</parameter>"
+            
+            for func_match in re.finditer(xml_func_pattern, content, re.DOTALL):
+                f_name = func_match.group("name").strip()
+                f_body = func_match.group("body")
+                
+                args = {}
+                for p_match in re.finditer(xml_param_pattern, f_body, re.DOTALL):
+                    p_key = p_match.group("key").strip()
+                    p_val = p_match.group("val").strip()
+                    args[p_key] = _parse_val(p_val) 
+                    
+                if f_name:
                     parsed_tool_calls.append(ToolCall(
                         id=f"call_{uuid.uuid4().hex[:8]}",
-                        name=name,
-                        arguments=_parse_val(args) if args is not None else {}
+                        name=f_name,
+                        arguments=args
                     ))
-        except Exception as e:
-            logger.debug(f"Failed to parse tag block: {e}")
+                    content = content.replace(func_match.group(0), "")
 
-    # 3.2 扫描正文中的裸 JSON 结构 (兜底 OpenAI 格式)
-    # 模型有时会直接输出: {"name": "func", "arguments": {...}} 
-    # 或严格的 OpenAI 格式: {"type": "function", "function": {"name": "func", "arguments": "{...}"}}
-    decoder = json.JSONDecoder()
-    cursor = 0
-    while cursor < len(content):
-        start_idx = content.find('{', cursor)
-        if start_idx == -1: 
-            break
-        try:
-            obj, end_pos = decoder.raw_decode(content[start_idx:])
-            
-            is_valid_tool = False
-            name = None
-            args = None
-
-            # 情况 A: 严格的 OpenAI 嵌套格式 {"function": {"name": "...", "arguments": "..."}}
-            if isinstance(obj, dict) and "function" in obj and isinstance(obj["function"], dict):
-                name = obj["function"].get("name")
-                args = obj["function"].get("arguments")
-                is_valid_tool = True
-            
-            # 情况 B1: 扁平化的格式 {"name": "...", "arguments": ...}
-            elif isinstance(obj, dict) and "name" in obj and "arguments" in obj:
-                name = obj.get("name")
-                args = obj.get("arguments")
-                is_valid_tool = True
-
-            # 情况 B2: 扁平化的 function 格式 {"type":"function","name":"...","parameters":{...}}
-            elif (
-                isinstance(obj, dict)
-                and obj.get("type") == "function"
-                and "name" in obj
-                and "parameters" in obj
-            ):
-                name = obj.get("name")
-                args = obj.get("parameters")
-                is_valid_tool = True
-
-            # 情况 B3: 扁平化的 function 格式 {"type":"function","name":"...","arguments":{...}}
-            elif (
-                isinstance(obj, dict)
-                and obj.get("type") == "function"
-                and "name" in obj
-                and "arguments" in obj
-            ):
-                name = obj.get("name")
-                args = obj.get("arguments")
-                is_valid_tool = True
-
-            if is_valid_tool and isinstance(name, str) and name != "think":
-                parsed_tool_calls.append(ToolCall(
-                    id=f"call_{uuid.uuid4().hex[:8]}", 
-                    name=name, 
-                    arguments=_parse_val(args)
-                ))
-                # 提取成功后，将该 JSON 块从正文中抹除
-                content = content[:start_idx] + content[start_idx + end_pos:]
-                # 注意：抹除后字符串变短，游标保持在原位继续扫描
-                cursor = start_idx 
-                continue 
-            
-            # 如果不是工具调用格式，跳过该 JSON
-            cursor = start_idx + end_pos
-        except json.JSONDecodeError:
-            cursor = start_idx + 1
-        except Exception as e:
-            logger.debug(f"JSON scan skip: {e}")
-            cursor = start_idx + 1
-
-    # 3.3 增强解析：针对 <function=...><parameter=...> 格式
-    # 匹配模式：提取函数名和中间的内容
-    xml_func_pattern = r"<function=(?P<name>[^>]+)>(?P<body>.*?)</function>"
-    # 匹配模式：从 body 中提取参数键值对
-    xml_param_pattern = r"<parameter=(?P<key>[^>]+)>(?P<val>.*?)</parameter>"
-    
-    for func_match in re.finditer(xml_func_pattern, content, re.DOTALL):
-        f_name = func_match.group("name").strip()
-        f_body = func_match.group("body")
-        
-        # 提取该函数下的所有参数
-        args = {}
-        for p_match in re.finditer(xml_param_pattern, f_body, re.DOTALL):
-            p_key = p_match.group("key").strip()
-            p_val = p_match.group("val").strip()
-            args[p_key] = _parse_val(p_val) # 使用你定义的 _parse_val 处理数字/布尔/JSON
-            
-        if f_name:
-            parsed_tool_calls.append(ToolCall(
-                id=f"call_{uuid.uuid4().hex[:8]}",
-                name=f_name,
-                arguments=args
-            ))
-            # 从正文中移除这个匹配到的完整 XML 块
-            content = content.replace(func_match.group(0), "")
-
-    # 4. 最后清理正文：删除所有标签残留 (更新后的正则)
     content = re.sub(
     r"<(?:tool_call|/tool_call|\|python_tag\||\|python_start\||\|python_end\||/?function(?:=[^>]+)?|/?parameter(?:=[^>]+)?)>",
     "",
     content,
 )    
-    # 处理重复文本（复读机现象）
     content = content.strip()
     lines = [l.strip() for l in content.split('\n') if l.strip()]
     if len(lines) > 2 and lines[:len(lines)//2] == lines[len(lines)//2:]:
@@ -418,7 +406,6 @@ def generate(
 
     tool_calls = parsed_tool_calls if parsed_tool_calls else None
     
-    # 如果既没有内容又没有工具调用，提供兜底以防系统崩溃
     if not content and not tool_calls:
         raw_preview = ""
         try:

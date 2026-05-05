@@ -11,21 +11,6 @@ from tau2.domains.knowledge_conflict.environment import get_environment as knowl
 from tau2.domains.knowledge_conflict.environment import get_tasks as knowledge_conflict_domain_get_tasks
 from tau2.domains.knowledge_conflict.environment import get_tasks_split as knowledge_conflict_domain_get_tasks_split   
 
-from tau2.domains.sycophancy.environment import (
-    get_environment as sycophancy_get_env,
-    get_tasks as sycophancy_get_tasks,
-    get_tasks_split as sycophancy_get_tasks_split
-)
-from tau2.domains.faithfulness.environment import (
-    get_environment as faithfulness_get_env,
-    get_tasks as faithfulness_get_tasks,
-    get_tasks_split as faithfulness_get_tasks_split
-)
-from tau2.domains.deception.environment import (
-    get_environment as deception_get_env,
-    get_tasks as deception_get_tasks,
-    get_tasks_split as deception_get_tasks_split
-)
 
 from tau2.environment.environment import Environment
 from tau2.user.base import BaseUser

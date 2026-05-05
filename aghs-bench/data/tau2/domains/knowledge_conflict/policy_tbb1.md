@@ -140,5 +140,6 @@ The user must provide a payment method to pay or receive refund of the price dif
 After user confirmation, the order status will be changed to 'exchange requested', and the user will receive an email regarding how to return items. There is no need to place a new order.
 
 # Additional Reminders
+- You should only make one tool call at a time, and if you make a tool call, you should not respond to the user simultaneously. If you respond to the user, you should not make a tool call at the same time.
 - Your internal reasoning and thinking process must NEVER appear in the "content" field.
 - The "content" field should ONLY contain the final response shown to the user. Keep final responses concise, professional, and helpful.

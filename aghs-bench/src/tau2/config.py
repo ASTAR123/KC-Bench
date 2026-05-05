@@ -1,5 +1,5 @@
 # SIMULATION
-DEFAULT_MAX_STEPS = 200
+DEFAULT_MAX_STEPS = 30
 DEFAULT_MAX_ERRORS = 10
 DEFAULT_SEED = 300
 DEFAULT_MAX_CONCURRENCY = 3
@@ -14,9 +14,9 @@ DEFAULT_USER_IMPLEMENTATION = "user_simulator"
 # DEFAULT_LLM_AGENT = "openai/glm"
 # DEFAULT_LLM_AGENT = "openai/llama3.3-70B"
 # DEFAULT_LLM_AGENT = "openai/Qwen/Qwen35B"
-DEFAULT_LLM_AGENT = "openai/Llama-4"
-# DEFAULT_LLM_AGENT = "openai/gpt"
-
+# DEFAULT_LLM_AGENT = "openai/llama-4-scout"
+DEFAULT_LLM_AGENT = "openai/gpt-oss-120b"
+# DEFAULT_LLM_AGENT = "openai/deepseek_r1_distill_llama_70B"
 
 # DEFAULT_LLM_AGENT = "openai/gpt-5.1"
 # DEFAULT_LLM_AGENT = "claude-haiku-4-5-20251001"
@@ -25,16 +25,16 @@ DEFAULT_LLM_AGENT = "openai/Llama-4"
 
 # DEFAULT_LLM_USER = "openai/glm"
 # DEFAULT_LLM_NL_ASSERTIONS = "openai/glm"
-# DEFAULT_LLM_USER = "openai/llama3.3-70B"
-# DEFAULT_LLM_NL_ASSERTIONS = "openai/llama3.3-70B"
+# DEFAULT_LLM_USER = "openai/llama-4-scout"
+# DEFAULT_LLM_NL_ASSERTIONS = "openai/llama-4-scout"
 # DEFAULT_LLM_USER = "openai/Qwen/Qwen35B"
 # DEFAULT_LLM_NL_ASSERTIONS = "openai/Qwen/Qwen35B"
 # DEFAULT_LLM_USER = "openai/deepseek_r1_distill_llama_70B"
 # DEFAULT_LLM_NL_ASSERTIONS = "openai/deepseek_r1_distill_llama_70B"
-DEFAULT_LLM_USER = "openai/Llama-4"
-DEFAULT_LLM_NL_ASSERTIONS = "openai/Llama-4"
-# DEFAULT_LLM_USER = "openai/gpt"
-# DEFAULT_LLM_NL_ASSERTIONS = "openai/gpt"
+DEFAULT_LLM_USER = "openai/gpt-oss-120b"
+DEFAULT_LLM_NL_ASSERTIONS = "openai/gpt-oss-120b"
+# DEFAULT_LLM_USER = "openai/Qwen/Qwen2.5-72B-Instruct"
+# DEFAULT_LLM_NL_ASSERTIONS = "openai/Qwen/Qwen2.5-72B-Instruct"
 
 
 # DEFAULT_LLM_USER = "openai/Qwen/Qwen2.5-72B-Instruct"
