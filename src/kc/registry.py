@@ -7,9 +7,22 @@ from pydantic import BaseModel
 from kc.agent.base import BaseAgent
 from kc.agent.llm_agent import LLMAgent, LLMGTAgent, LLMSoloAgent
 from kc.data_model.tasks import Task
-from kc.domains.knowledge_conflict.environment import get_environment as knowledge_conflict_domain_get_environment
-from kc.domains.knowledge_conflict.environment import get_tasks as knowledge_conflict_domain_get_tasks
-from kc.domains.knowledge_conflict.environment import get_tasks_split as knowledge_conflict_domain_get_tasks_split   
+
+# from kc.domains.knowledge_conflict.environment import get_environment as knowledge_conflict_domain_get_environment
+# from kc.domains.knowledge_conflict.environment import get_tasks as knowledge_conflict_domain_get_tasks
+# from kc.domains.knowledge_conflict.environment import get_tasks_split as knowledge_conflict_domain_get_tasks_split   
+
+from kc.domains.region.environment import get_environment as region_domain_get_environment
+from kc.domains.region.environment import get_tasks as region_domain_get_tasks
+from kc.domains.region.environment import get_tasks_split as region_domain_get_tasks_split   
+
+from kc.domains.retail.environment import get_environment as retail_domain_get_environment
+from kc.domains.retail.environment import get_tasks as retail_domain_get_tasks
+from kc.domains.retail.environment import get_tasks_split as retail_domain_get_tasks_split   
+
+from kc.domains.personalAssistant.environment import get_environment as personalAssistant_domain_get_environment
+from kc.domains.personalAssistant.environment import get_tasks as personalAssistant_domain_get_tasks
+from kc.domains.personalAssistant.environment import get_tasks_split as personalAssistant_domain_get_tasks_split   
 
 
 from kc.environment.environment import Environment
@@ -183,11 +196,25 @@ try:
     registry.register_agent(LLMGTAgent, "llm_agent_gt")
     registry.register_agent(LLMSoloAgent, "llm_agent_solo")
 
-    registry.register_domain(knowledge_conflict_domain_get_environment, "knowledge_conflict")
+    registry.register_domain(region_domain_get_environment, "region")
     registry.register_tasks(
-        knowledge_conflict_domain_get_tasks,
-        "knowledge_conflict",
-        get_task_splits=knowledge_conflict_domain_get_tasks_split,
+        region_domain_get_tasks,
+        "region",
+        get_task_splits=region_domain_get_tasks_split,
+    )
+    
+    registry.register_domain(retail_domain_get_environment, "retail")
+    registry.register_tasks(
+        retail_domain_get_tasks,
+        "retail",
+        get_task_splits=retail_domain_get_tasks_split,
+    )
+    
+    registry.register_domain(personalAssistant_domain_get_environment, "personalAssistant")
+    registry.register_tasks(
+        personalAssistant_domain_get_tasks,
+        "personalAssistant",
+        get_task_splits=personalAssistant_domain_get_tasks_split,
     )
 
     logger.debug(
