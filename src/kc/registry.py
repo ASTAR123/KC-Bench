@@ -8,10 +8,6 @@ from kc.agent.base import BaseAgent
 from kc.agent.llm_agent import LLMAgent, LLMGTAgent, LLMSoloAgent
 from kc.data_model.tasks import Task
 
-# from kc.domains.knowledge_conflict.environment import get_environment as knowledge_conflict_domain_get_environment
-# from kc.domains.knowledge_conflict.environment import get_tasks as knowledge_conflict_domain_get_tasks
-# from kc.domains.knowledge_conflict.environment import get_tasks_split as knowledge_conflict_domain_get_tasks_split   
-
 from kc.domains.region.environment import get_environment as region_domain_get_environment
 from kc.domains.region.environment import get_tasks as region_domain_get_tasks
 from kc.domains.region.environment import get_tasks_split as region_domain_get_tasks_split   

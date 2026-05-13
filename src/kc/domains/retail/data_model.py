@@ -1,4 +1,4 @@
-"""Data model for the conflict benchmark domain."""
+"""Data model for the retail benchmark domain."""
 
 from typing import Any, Dict, List, Literal, Optional, Union
 
@@ -80,8 +80,12 @@ class User(BaseModel):
 
 
 class OrderFullfilment(BaseModel):
-    tracking_id: list[str] = Field(description="List of tracking IDs for shipments")
-    item_ids: list[str] = Field(description="List of item IDs included in this fulfillment")
+    tracking_id: List[str] = Field(
+        description="List of tracking IDs for shipments"
+    )
+    item_ids: List[str] = Field(
+        description="List of item IDs included in this fulfillment"
+    )
 
 
 class OrderItem(BaseModel):
@@ -89,7 +93,9 @@ class OrderItem(BaseModel):
     product_id: str = Field(description="ID of the product")
     item_id: str = Field(description="ID of the specific variant")
     price: float = Field(description="Price of the item at time of purchase")
-    options: Dict[str, str] = Field(description="Options selected for this item")
+    options: Dict[str, str] = Field(
+        description="Options selected for this item"
+    )
 
 
 OrderPaymentType = Literal["payment", "refund"]
@@ -100,7 +106,9 @@ class OrderPayment(BaseModel):
         description="Type of transaction (payment or refund)"
     )
     amount: float = Field(description="Amount of the transaction")
-    payment_method_id: str = Field(description="ID of the payment method used")
+    payment_method_id: str = Field(
+        description="ID of the payment method used"
+    )
 
 
 OrderStatus = Literal[
@@ -113,85 +121,94 @@ OrderStatus = Literal[
     "return requested",
 ]
 
-CancelReason = Literal["no longer needed", "ordered by mistake"]
+
+CancelReason = Literal[
+    "no longer needed",
+    "ordered by mistake",
+]
 
 
 class Order(BaseModel):
     order_id: str = Field(description="Unique identifier for the order")
     user_id: str = Field(description="Unique identifier for the user")
     address: UserAddress = Field(description="Address of the user")
-    items: List[OrderItem] = Field(description="Items in the order")
-    status: OrderStatus = Field(description="Status of the order")
+
+    items: List[OrderItem] = Field(
+        description="Items in the order"
+    )
+
+    status: OrderStatus = Field(
+        description="Status of the order"
+    )
+
     fulfillments: List[OrderFullfilment] = Field(
         description="Fulfillments of the order"
     )
-    payment_history: List[OrderPayment] = Field(description="Payments of the order")
+
+    payment_history: List[OrderPayment] = Field(
+        description="Payments of the order"
+    )
+
     cancel_reason: Optional[CancelReason] = Field(
         description="Reason for cancelling the order",
         default=None,
     )
+
     exchange_items: Optional[List[str]] = Field(
-        description="Items to be exchanged", default=None
+        description="Items to be exchanged",
+        default=None,
     )
+
     exchange_new_items: Optional[List[str]] = Field(
-        description="Items exchanged for", default=None
+        description="Items exchanged for",
+        default=None,
     )
+
     exchange_payment_method_id: Optional[str] = Field(
-        description="Payment method ID for the exchange", default=None
+        description="Payment method ID for the exchange",
+        default=None,
     )
+
     exchange_price_difference: Optional[float] = Field(
-        description="Price difference for the exchange", default=None
+        description="Price difference for the exchange",
+        default=None,
     )
+
     return_items: Optional[List[str]] = Field(
-        description="Items to be returned", default=None
+        description="Items to be returned",
+        default=None,
     )
+
     return_payment_method_id: Optional[str] = Field(
-        description="Payment method ID for the return", default=None
+        description="Payment method ID for the return",
+        default=None,
     )
-
-
-class ConflictEntity(BaseModel):
-    """Represents an entity in the conflict benchmark database."""
-    true_value: str = Field(description="The ground truth value for the entity.")
-    relation: str = Field(description="The relation ID (e.g. P131) connecting the entity to the value.")
 
 
 class RetailBenchmarkDB(DB):
-    """Database containing the ground truth for conflict benchmark entities."""
-    entities: Dict[str, ConflictEntity] = Field(
-        default_factory=dict, 
-        description="Dictionary of entities indexed by their name."
-    )
+    """Database containing retail benchmark data."""
+
     products: Dict[str, Product] = Field(
         default_factory=dict,
-        description="Retail products indexed by product ID."
+        description="Retail products indexed by product ID.",
     )
+
     users: Dict[str, User] = Field(
         default_factory=dict,
-        description="Retail users indexed by user ID."
+        description="Retail users indexed by user ID.",
     )
+
     orders: Dict[str, Order] = Field(
         default_factory=dict,
-        description="Retail orders indexed by order ID."
-    )
-    contacts: Dict[str, Any] = Field(
-        default_factory=dict,
-        description="Personal assistant contacts indexed by name."
-    )
-    contact_history: List[Dict[str, Any]] = Field(
-        default_factory=list,
-        description="Personal assistant interaction history."
+        description="Retail orders indexed by order ID.",
     )
 
     def get_statistics(self) -> Dict[str, Any]:
         """Get the statistics of the database."""
         return {
-            "num_entities": len(self.entities),
             "num_products": len(self.products),
             "num_users": len(self.users),
             "num_orders": len(self.orders),
-            "num_contacts": len(self.contacts),
-            "num_contact_history": len(self.contact_history),
         }
 
 
