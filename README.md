@@ -19,6 +19,7 @@ $KC$-Bench is a simulation framework designed to evaluate Large Language Model (
   
 
 $KC$-Bench introduces specialized tasks where external tool outputs intentionally contradict common knowledge in model training data or user-provided incorrect information, in order to test the agent's reasoning and grounding capabilities.
+
 We have designed tasks and databases in three areas: retail, personal assistant, and region. In retail, we examine the knowledge conflicts between user input and the database. In personal assistant, we investigate the internal conflicts within the database. And in region, we explore the conflicts between user input and common sense which is from model training data.
 
   Each domain specifies:
@@ -177,7 +178,7 @@ data/KC-Bench/simulations/
 
   
 
-## `tau2 run` — Run Evaluations
+## `kc run` — Run Evaluations
 
 
 Run agent evaluations across different communication modes.
@@ -185,7 +186,7 @@ Run agent evaluations across different communication modes.
 ### Basic Usage
 
 ```shell
-tau2 run \
+kc run \
   --domain <domain> \
   --agent-llm <llm_name> \
   --user-llm <llm_name> \
@@ -220,15 +221,15 @@ tau2 run \
 | `--max-retries`     | Max retries for failed tasks (default: `3`)                                     |
 | `--retry-delay`     | Delay in seconds between retries (default: `1.0`)                               |
 
-You can find all `tau2` commands and options in [CLI Reference](docs/cli_reference.md)
+You can find all `kc` commands and options in [CLI Reference](docs/cli_reference.md)
 
-## `tau2 view` — View Results
+## `kc view` — View Results
 
 
 Browse and analyze simulation results(defaults to `data/simulations/`).
 
 ```shell
-tau2 view
+kc view
 ```
 
 
