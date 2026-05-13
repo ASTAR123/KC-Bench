@@ -19,6 +19,7 @@ $KC$-Bench is a simulation framework designed to evaluate Large Language Model (
   
 
 $KC$-Bench introduces specialized tasks where external tool outputs intentionally contradict common knowledge in model training data or user-provided incorrect information, in order to test the agent's reasoning and grounding capabilities.
+
 We have designed tasks and databases in three areas: retail, personal assistant, and region. In retail, we examine the knowledge conflicts between user input and the database. In personal assistant, we investigate the internal conflicts within the database. And in region, we explore the conflicts between user input and common sense which is from model training data.
 
   Each domain specifies:
