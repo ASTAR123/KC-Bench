@@ -1,6 +1,6 @@
-# Tau2 Domains
+# KC Domains
 
-This folder contains the domains for the Tau2 project.
+This folder contains the domains for the KC project.
 
 ## Domain Structure
 
@@ -21,7 +21,7 @@ Each domain has its own folder with the following structure:
 
 ## Data Storage
 
-All the data for the domain is stored in `data/KC-Benchdomains/<domain_name>` folder.
+All the data for the domain is stored in `data/KC-Bench/domains/<domain_name>` folder.
 Should contain:
 - `tasks.json`: A JSON file containing the tasks for the domain.
 - `split_tasks.json`: A JSON file containing the task splits for the domain.
@@ -45,7 +45,7 @@ pytest tests/domain_tests/<domain_name>
 ```
 
 ## Registering your domain
-To make it easy for people to use your domain, you need to register your `get_environment` function in Tau2 `registry.py` file.
+To make it easy for people to use your domain, you need to register your `get_environment` function in KC `registry.py` file.
 
 In `registry.py`:
 ```python

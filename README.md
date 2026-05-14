@@ -221,9 +221,6 @@ kc run \
 | `--seed`            | Random seed for reproducibility (default: `300`)                                |
 | `--save-to`         | Custom output directory name (saved under `data/simulations/`)                  |
 | `--log-level`       | Log level (default: `ERROR`)                                                    |
-| `--verbose-logs`    | Save detailed logs (LLM calls, audio, ticks)                                    |
-| `--audio-debug`     | Save per-tick audio files and timing analysis (requires `--audio-native`)       |
-| `--llm-log-mode`    | LLM log mode when `--verbose-logs` is on: `all` or `latest` (default: `latest`) |
 | `--max-retries`     | Max retries for failed tasks (default: `3`)                                     |
 | `--retry-delay`     | Delay in seconds between retries (default: `1.0`)                               |
 

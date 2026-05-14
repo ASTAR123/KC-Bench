@@ -6,7 +6,7 @@
 To develop an agent for a specific domain, you first need to understand the domain's policy and available tools. Start by running the environment server for your target domain:
 
 ```bash
-tau2 domain <domain>
+kc domain <domain>
 ```
 
 This will start a server and automatically open your browser to the API documentation page (ReDoc). Here you can:
@@ -16,9 +16,9 @@ This will start a server and automatically open your browser to the API document
 
 ## Developing an Agent
 
-Implement the `LocalAgent` class in `src/tau2/agent/base.py`
+Implement the `LocalAgent` class in `src/kc/agent/base.py`
 
-Register your agent in `src/tau2/agent/registry.py`
+Register your agent in `src/kc/agent/registry.py`
 ```python
 registry.register_agent(MyAgent, "my_agent")
 ```
@@ -26,7 +26,7 @@ registry.register_agent(MyAgent, "my_agent")
 ## Testing Your Agent
 You can now use the command:
 ```bash
-tau2 run \
+kc run \
   --domain <domain> \
   --agent my_agent \
   --agent-llm <llm_name> \
