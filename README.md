@@ -20,6 +20,7 @@ $KC$-Bench is a simulation framework designed to evaluate Large Language Model (
 
 $KC$-Bench introduces specialized tasks where external tool outputs intentionally contradict common knowledge in model training data or user-provided incorrect information, in order to test the agent's reasoning and grounding capabilities.
 
+
 We have designed tasks and databases in three areas: retail, personal assistant, and region. In retail, we examine the knowledge conflicts between user input and the database. In personal assistant, we investigate the internal conflicts within the database. And in region, we explore the conflicts between user input and common sense which is from model training data.
 
   Each domain specifies:
@@ -221,6 +222,9 @@ kc run \
 | `--seed`            | Random seed for reproducibility (default: `300`)                                |
 | `--save-to`         | Custom output directory name (saved under `data/simulations/`)                  |
 | `--log-level`       | Log level (default: `ERROR`)                                                    |
+| `--verbose-logs`    | Save detailed logs (LLM calls, audio, ticks)                                    |
+| `--audio-debug`     | Save per-tick audio files and timing analysis (requires `--audio-native`)       |
+| `--llm-log-mode`    | LLM log mode when `--verbose-logs` is on: `all` or `latest` (default: `latest`) |
 | `--max-retries`     | Max retries for failed tasks (default: `3`)                                     |
 | `--retry-delay`     | Delay in seconds between retries (default: `1.0`)                               |
 
@@ -268,29 +272,4 @@ howpublished={\url{https://github.com/ASTAR123/KC-Bench}}
 
 }
 
-```
-### Core τ-Bench
-
-[](https://github.com/sierra-research/tau2-bench#core-tau-bench)
-
-```bibtex
-@misc{barres2025tau2,
-      title={$\tau^2$-Bench: Evaluating Conversational Agents in a Dual-Control Environment}, 
-      author={Victor Barres and Honghua Dong and Soham Ray and Xujie Si and Karthik Narasimhan},
-      year={2025},
-      eprint={2506.07982},
-      archivePrefix={arXiv},
-      primaryClass={cs.AI},
-      url={https://arxiv.org/abs/2506.07982}, 
-}
-
-@misc{yao2024tau,
-      title={$\tau$-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains}, 
-      author={Shunyu Yao and Noah Shinn and Pedram Razavi and Karthik Narasimhan},
-      year={2024},
-      eprint={2406.12045},
-      archivePrefix={arXiv},
-      primaryClass={cs.AI},
-      url={https://arxiv.org/abs/2406.12045}, 
-}
 ```
