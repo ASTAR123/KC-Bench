@@ -228,7 +228,7 @@ kc run \
 | `--max-retries`     | Max retries for failed tasks (default: `3`)                                     |
 | `--retry-delay`     | Delay in seconds between retries (default: `1.0`)                               |
 
-You can find all `kc` commands and options in [CLI Reference](docs/cli_reference.md)
+You can find all `kc` commands and options in [CLI Reference](docs/cli-reference.md)
 
 ## `kc view` — View Results
 
